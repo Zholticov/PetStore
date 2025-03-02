@@ -17,8 +17,8 @@ UPLOAD_IMAGES_FOLDER = os.path.join('static', 'imgs', 'uploaded')
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'wtf_key'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///store.db'
 api = Api(app)
-hashed_api_key = "pbkdf2:sha256:150000$rDh6yNZA$ea67d9a507ff96ba276b9c90b4c16eba7087c8f10f2c520815d951202594462b"
 hashed_admin_key = "pbkdf2:sha256:150000$phWNreer$470eaca149f9a2c60bf848a614915b890e26015c5ed47ab69a7e5fa533d7cacf"
 
 login_manager = LoginManager()
@@ -617,7 +617,7 @@ def upload_image(img_data) -> str:
     if img_data:
         img_name = f"{str(round(time() * 1000))}.{img_data.filename.split('.')[-1]}"
         img_path = os.path.join(UPLOAD_IMAGES_FOLDER, img_name)
-        img_data.save(img_path)
+        img_data.save(os.path.join(PROJECT_ROOT, UPLOAD_IMAGES_FOLDER, img_name))
         return img_path
     return ''
 
@@ -645,7 +645,10 @@ def generate_routes():
 
 
 def main():
-    db_session.global_init("db/store.db")
+    db_file = os.path.join(os.path.dirname(__file__), 'db/store.db')
+    if not os.path.exists(db_file):
+        print(f"Файл базы данных не найден: {db_file}")
+    db_session.global_init(db_file)
     generate_routes()
 
     # from db.petstore_init_data.init_basic_data import init_basic_data
@@ -653,8 +656,8 @@ def main():
 
     add_temp_data()
 
-    app.run(port=8000, host='127.0.0.1')
+#    app.run(port=8000, host='127.0.0.1')
 
 
-if __name__ == '__main__':
-    main()
+#if __name__ == '__main__':
+main()
