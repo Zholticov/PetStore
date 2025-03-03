@@ -655,8 +655,8 @@ def main():
     # init_basic_data()
 
     add_temp_data()
-    # app.run(port=8000, host='127.0.0.1')
+    app.run(port=8000, host='127.0.0.1')
 
 
-# if __name__ == '__main__':
-main()
+if __name__ == '__main__':
+	main()
