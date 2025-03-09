@@ -8,7 +8,7 @@ from werkzeug.security import check_password_hash
 
 import data.db_session as db_session
 from api.__all_resources import *
-from api.other_api_parts import login_api, img_api
+from api.other_api_parts import login_api, get_img_api, send_img_api
 from data.__all_models import *
 from data.upload_tools.upload_image import upload_image
 from forms.__all_forms import *
@@ -639,7 +639,8 @@ def main():
         print(f"Файл базы данных не найден: {db_file}")
     db_session.global_init(db_file)
     app.register_blueprint(login_api.blueprint)
-    app.register_blueprint(img_api.blueprint)
+    app.register_blueprint(get_img_api.blueprint)
+    app.register_blueprint(send_img_api.blueprint)
     generate_routes()
 
     # from db.petstore_init_data.init_basic_data import init_basic_data
@@ -649,5 +650,5 @@ def main():
     app.run(port=8000, host='127.0.0.1')
 
 
-# if __name__ == '__main__':
-main()
+if __name__ == '__main__':
+    main()
