@@ -1,10 +1,10 @@
 from flask import abort, jsonify
 from flask_restful import abort, Resource
 
-from api.check_api import check_api
 from api.user_reqparser import *
 from data import db_session
 from data.__all_models import *
+from data.utils.check_api import check_api
 from forms.validators.EmailValidator import is_email_valid
 
 
@@ -66,7 +66,7 @@ class UserListResource(Resource):
         session = db_session.create_session()
         users = session.query(User).all()
         return jsonify({
-            'users': [item.to_dict(only=('id', 'name', 'email', 'role_id'))
+            'users': [item.to_dict(only=('id', 'name', 'email', 'role_id')) 
                       for item in users]})
 
     @check_api
@@ -78,9 +78,9 @@ class UserListResource(Resource):
             abort(400, message="Bad request to post user")
 
         if not is_email_valid(args['email']):
-            return jsonify({'success': 'NO', 'correct_email': False})
+            return jsonify({'success': 'NO', 'correct_email': False, 'unique_email': True, 'user_id': -1})
         if session.query(User).filter(User.email == args['email']).first():
-            return jsonify({'success': 'NO', 'correct_email': True, 'unique_email': False})
+            return jsonify({'success': 'NO', 'correct_email': True, 'unique_email': False, 'user_id': -1})
 
         user = User()
         user.name = args['name']
